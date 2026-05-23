@@ -3,7 +3,7 @@
 This guide covers deploying the app to **Vercel** (hosting) + **Supabase** (auth & database), making it installable as a phone app (PWA), and selling it on **LemonSqueezy**.
 
 ---
-
+Data base Password: umyf3BCw2FuO33Hg
 ## Part 1: Supabase Setup (Database + Authentication)
 
 ### Step 1 — Create a Supabase Project
