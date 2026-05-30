@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
+import { getDemoMode, isDemoPaid, DEMO_ENTITLEMENT } from '../lib/demoMode';
 
 // LemonSqueezy License API — public endpoints (no API key required for activate/validate)
 // Docs: https://docs.lemonsqueezy.com/api/license-api
@@ -69,6 +70,13 @@ export function useEntitlement(userId) {
 
   // Load entitlement from Supabase when user signs in
   useEffect(() => {
+    // Demo mode short-circuit
+    if (getDemoMode()) {
+      setEntitlement(isDemoPaid() ? DEMO_ENTITLEMENT : null);
+      setLoaded(true);
+      return;
+    }
+
     if (!userId) {
       setEntitlement(null);
       localStorage.removeItem(CACHE_KEY);

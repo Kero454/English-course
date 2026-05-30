@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { getDemoMode, DEMO_USER } from '../lib/demoMode';
 
 const AuthContext = createContext({});
 
@@ -8,6 +9,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Demo mode: skip Supabase, return a fake authenticated user.
+    if (getDemoMode()) {
+      setUser(DEMO_USER);
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);

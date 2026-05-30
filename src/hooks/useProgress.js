@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { getDemoMode, DEMO_PROGRESS } from '../lib/demoMode';
 
 const STORAGE_KEY = 'english-course-progress';
 
@@ -15,7 +16,9 @@ const defaultProgress = {
 };
 
 export function useProgress(userId) {
+  const demo = getDemoMode();
   const [progress, setProgress] = useState(() => {
+    if (demo) return DEMO_PROGRESS;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       return saved ? JSON.parse(saved) : defaultProgress;
@@ -23,11 +26,12 @@ export function useProgress(userId) {
       return defaultProgress;
     }
   });
-  const [dbLoaded, setDbLoaded] = useState(false);
+  const [dbLoaded, setDbLoaded] = useState(!!demo);
   const saveTimeoutRef = useRef(null);
 
   // Load progress from Supabase when user is authenticated
   useEffect(() => {
+    if (demo) { setDbLoaded(true); return; }
     if (!userId) {
       setDbLoaded(true);
       return;
@@ -63,6 +67,7 @@ export function useProgress(userId) {
   // Save progress to localStorage + Supabase (debounced)
   const saveToDb = useCallback(
     (newProgress) => {
+      if (demo) return; // never persist in demo mode
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newProgress));
 
       if (!userId) return;

@@ -50,3 +50,24 @@ create policy "Users can delete own entitlement"
 
 -- Helpful index for license-key lookups (e.g., admin queries)
 create index if not exists entitlements_license_key_idx on public.entitlements (license_key);
+
+-- ============================================================================
+-- Data API exposure (required for Supabase projects created on/after May 2026)
+-- ============================================================================
+-- Since May 30 2026, new tables in the public schema are NOT automatically
+-- exposed to PostgREST/the Data API. Without these grants, supabase-js calls
+-- like supabase.from('entitlements')... will fail with a 404 / "relation does
+-- not exist in api schema" on new projects.
+--
+-- These grants are safe and idempotent on older projects (they were already
+-- there by default).
+-- ============================================================================
+
+grant usage on schema public to anon, authenticated;
+
+grant select, insert, update, delete on public.entitlements to authenticated;
+-- anon does NOT get write access; reads are blocked by RLS anyway.
+grant select on public.entitlements to anon;
+
+-- Make sure PostgREST notices the schema change immediately (no cache lag):
+notify pgrst, 'reload schema';
