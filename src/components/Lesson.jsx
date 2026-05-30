@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, CheckCircle, XCircle, RotateCcw, Award } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle, XCircle, RotateCcw, Award, Layers } from 'lucide-react';
 import courseContent, { getLevelColor } from '../data/courseContent';
+import SkillsPractice from './SkillsPractice';
 
 function findLesson(lessonId) {
   for (const [level, data] of Object.entries(courseContent)) {
@@ -122,18 +123,23 @@ export default function Lesson({ completeLesson, isLessonCompleted }) {
       {/* Tabs */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="flex gap-1">
-            {['learn', 'exercises'].map(t => (
+          <div className="flex gap-1 overflow-x-auto">
+            {[
+              { id: 'learn', label: 'Lesson Content' },
+              { id: 'exercises', label: `Exercises (${exercises.length})` },
+              { id: 'skills', label: '4 Skills Practice' },
+            ].map(t => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors capitalize ${
-                  tab === t
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  tab === t.id
                     ? `${colors.text} border-current`
                     : 'text-slate-500 border-transparent hover:text-slate-700'
                 }`}
               >
-                {t === 'learn' ? 'Lesson Content' : `Exercises (${exercises.length})`}
+                {t.id === 'skills' && <Layers className="w-4 h-4 inline mr-1.5 -mt-0.5" />}
+                {t.label}
               </button>
             ))}
           </div>
@@ -141,7 +147,9 @@ export default function Lesson({ completeLesson, isLessonCompleted }) {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {tab === 'learn' ? (
+        {tab === 'skills' ? (
+          <SkillsPractice lessonId={lessonId} colors={colors} />
+        ) : tab === 'learn' ? (
           <div className="space-y-6">
             {/* Main Content */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 sm:p-8">

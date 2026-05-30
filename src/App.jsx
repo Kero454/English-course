@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useProgress } from './hooks/useProgress';
 import Auth from './components/Auth';
@@ -8,6 +8,8 @@ import Dashboard from './components/Dashboard';
 import LevelOverview from './components/LevelOverview';
 import Lesson from './components/Lesson';
 import Assessment from './components/Assessment';
+import Legal from './components/Legal';
+import Footer from './components/Footer';
 import { Loader2 } from 'lucide-react';
 
 function LoadingScreen() {
@@ -21,20 +23,17 @@ function LoadingScreen() {
   );
 }
 
-function AppContent() {
+function ProtectedRoutes() {
   const { user, loading: authLoading, signOut } = useAuth();
-
   const {
     progress,
     dbLoaded,
     setStudentName,
-    setLevel,
     completePlacement,
     completeLesson,
     completeAssessment,
     resetProgress,
     isLessonCompleted,
-    getLessonScore,
     getAssessmentScore,
   } = useProgress(user?.id);
 
@@ -42,43 +41,34 @@ function AppContent() {
   if (!user) return <Auth />;
 
   return (
-    <Router>
+    <Routes>
+      <Route path="/" element={<Home progress={progress} setStudentName={setStudentName} signOut={signOut} user={user} />} />
+      <Route path="/placement-test" element={<PlacementTest completePlacement={completePlacement} />} />
+      <Route path="/dashboard" element={<Dashboard progress={progress} resetProgress={resetProgress} signOut={signOut} user={user} />} />
+      <Route path="/level/:level" element={<LevelOverview progress={progress} />} />
+      <Route path="/lesson/:lessonId" element={<Lesson completeLesson={completeLesson} isLessonCompleted={isLessonCompleted} />} />
+      <Route path="/assessment/:level" element={<Assessment completeAssessment={completeAssessment} getAssessmentScore={getAssessmentScore} />} />
+    </Routes>
+  );
+}
+
+function RouterContent() {
+  return (
+    <>
       <Routes>
-        <Route
-          path="/"
-          element={<Home progress={progress} setStudentName={setStudentName} signOut={signOut} user={user} />}
-        />
-        <Route
-          path="/placement-test"
-          element={<PlacementTest completePlacement={completePlacement} />}
-        />
-        <Route
-          path="/dashboard"
-          element={<Dashboard progress={progress} resetProgress={resetProgress} signOut={signOut} user={user} />}
-        />
-        <Route
-          path="/level/:level"
-          element={<LevelOverview progress={progress} />}
-        />
-        <Route
-          path="/lesson/:lessonId"
-          element={
-            <Lesson
-              completeLesson={completeLesson}
-              isLessonCompleted={isLessonCompleted}
-            />
-          }
-        />
-        <Route
-          path="/assessment/:level"
-          element={
-            <Assessment
-              completeAssessment={completeAssessment}
-              getAssessmentScore={getAssessmentScore}
-            />
-          }
-        />
+        <Route path="/legal/:page" element={<Legal />} />
+        <Route path="/legal" element={<Legal />} />
+        <Route path="/*" element={<ProtectedRoutes />} />
       </Routes>
+      <Footer />
+    </>
+  );
+}
+
+function AppContent() {
+  return (
+    <Router>
+      <RouterContent />
     </Router>
   );
 }
