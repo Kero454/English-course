@@ -159,7 +159,173 @@ The app is already configured as a Progressive Web App. Users can install it:
 
 ---
 
-## Part 4: Selling on LemonSqueezy as a Digital Product
+## Part 4: Pricing Strategy
+
+This section gives you a concrete recommendation for how to price the **English Course** on LemonSqueezy.
+
+### Market Reality Check
+
+| Competitor              | Model           | Price                  |
+|-------------------------|-----------------|------------------------|
+| Duolingo Super          | Subscription    | $7/month or $84/year   |
+| Babbel                  | Subscription    | $14/month or $99/year  |
+| Busuu Premium           | Subscription    | $14/month or $84/year  |
+| italki (1-on-1 tutor)   | Per session     | $10-30/hour            |
+| Cambridge English books | One-time eBook  | $20-40                 |
+| Udemy English courses   | One-time        | $15-200 (often $20)    |
+
+Your product sits between an **eBook** (static, one-time) and a **SaaS subscription** (recurring access). The fact that it has cloud sync, auth, PWA install, 4-skills practice, placement test, and assessments justifies positioning it **above eBook pricing**.
+
+### Recommended Pricing — Three Tiers
+
+This is the sweet spot for digital learning products on LemonSqueezy:
+
+#### Option 1 — One-Time Purchase (recommended for v1)
+
+| Tier            | Price        | What buyer gets                                      |
+|-----------------|--------------|------------------------------------------------------|
+| **Starter**     | **$29**      | Lifetime access to all 6 levels (A1-C2)              |
+| **Pro**         | **$49**      | Above + downloadable PDF workbook + future updates   |
+| **Lifetime+**   | **$79**      | Above + 1 hour of email Q&A support                  |
+
+**Why this works:**
+- $29 is the impulse-buy zone for self-learners (compare to a single restaurant meal).
+- $49 is the sweet spot most digital course sellers hit (psychological "value tier").
+- A higher tier makes the middle tier look like a bargain (anchoring effect).
+
+#### Option 2 — Subscription Model
+
+| Tier            | Price        | What buyer gets                                      |
+|-----------------|--------------|------------------------------------------------------|
+| **Monthly**     | **$9/mo**    | Full access while subscribed                         |
+| **Annual**      | **$59/yr**   | Same, but ~45% discount (best long-term value)       |
+
+**Use this if:** You plan to release new content regularly (new lessons, new assessments).
+
+#### Option 3 — Launch / Limited-Time Offer
+
+- **Launch price: $19** for the first 100 customers (creates urgency + early reviews).
+- Then raise to standard price ($29-$49).
+- This is the **fastest way to validate** that people actually want to buy.
+
+### Pricing Psychology Tips
+
+1. **Use $29 / $49 / $79** instead of $30/$50/$80 — the "9" ending consistently increases conversions by 5-15%.
+2. **Anchor with a higher fake "value"**: Show "Originally $99 — now $49" on the LemonSqueezy product page.
+3. **Lifetime > Subscription** for an indie launch — easier to market, no churn to manage.
+4. **Charge in USD**, not your local currency — most international buyers expect it.
+5. **Don't price below $19** — too low signals "low quality" in the digital course market.
+
+### What to Bundle (to Justify Higher Prices)
+
+- A **printable PDF workbook** (export your lessons as PDF — free with the `vite-plugin-pwa` ecosystem or a tool like Puppeteer).
+- A **certificate of completion** generated after each level assessment (>=80% score).
+- **Email-based personalised feedback** on 3 writing tasks (premium tier).
+- **A Notion or Google Sheet study tracker** template.
+- **Bonus content**: "100 Common Mistakes" cheat sheet, IPA pronunciation guide, etc.
+
+---
+
+## Part 5: Marketing — LemonSqueezy vs. You
+
+**Short answer: LemonSqueezy handles checkout & payment, but YOU drive the traffic.**
+
+### What LemonSqueezy DOES Handle
+
+- Payment processing (cards, PayPal, Apple/Google Pay).
+- **EU/UK VAT and US sales tax** — they are the Merchant of Record, so they collect and remit taxes on your behalf. This is huge.
+- Invoicing, receipts, and refunds.
+- Fraud detection.
+- A **hosted checkout page** at `yourstore.lemonsqueezy.com/buy/...`.
+- Built-in **affiliate program** (optional — let others promote for a commission).
+- Discount codes & limited-time offers.
+- Webhooks for automation.
+
+### What LemonSqueezy Does NOT Do
+
+- **They do not market your product for you.** There is no built-in audience.
+- They will not write blog posts, run ads, or send traffic.
+- The LemonSqueezy "discover" page exists, but generates minimal sales.
+
+### Your Marketing Plan (Realistic, Low-Budget)
+
+#### Week 1-2 — Free, High-Leverage Channels
+
+1. **Product Hunt launch** — free, can drive 200-2000 visitors in one day. Schedule for a Tuesday or Wednesday.
+2. **Reddit** — post in `r/EnglishLearning`, `r/languagelearning`, `r/learnenglish`, `r/EFL`. Don't spam; write a genuine "I built this" post and offer a discount code.
+3. **Indie Hackers** — post your launch story. The community loves "I built X with Y, here's what I learned" posts.
+4. **Hacker News** ("Show HN") — only if you have something technically interesting to highlight (PWA + Supabase stack works).
+5. **Twitter/X** — build in public; tweet screenshots, progress, and lessons learned during development.
+
+#### Week 3-4 — Paid Tests (Optional, $50-200 budget)
+
+6. **Facebook/Instagram ads** targeting English learners in non-English-speaking countries (Egypt, Brazil, Vietnam, Turkey, Spain, Mexico). Test with $5/day for a week, measure cost-per-click.
+7. **TikTok organic** — short videos showing tricky grammar points or pronunciation tips. Even 1 viral video can drive thousands of visitors. Free, high-upside.
+
+#### Month 2+ — SEO (Slow but Compounding)
+
+8. **Blog content** — write articles like "How long does it take to go from A1 to B2?", "10 most confusing English idioms explained", "Free CEFR placement test online". Each post can rank on Google and bring buyers for years. Use the `/blog` route or a tool like Astro.
+9. **YouTube** — record yourself explaining lessons. Each video links to your product. Compounds over time.
+10. **Affiliate partnerships** — reach out to language YouTubers and offer 30% commission via LemonSqueezy's affiliate program.
+
+### Pricing Page Best Practices
+
+When you build a landing page for your product (highly recommended — not just the LemonSqueezy checkout), include:
+
+- **A bold headline** focused on the buyer's transformation, not features. Example: "Go from A1 to C2 in 12 months — without a tutor."
+- **Screenshots and a 60-second demo video.**
+- **Social proof** — 3-5 testimonials (start by giving free access in exchange for honest reviews).
+- **Money-back guarantee** — "30-day refund, no questions asked" boosts conversion by 20-40%.
+- **The "Who is this for / not for"** section — qualifies buyers and reduces refunds.
+- **An FAQ** — answers objections before they kill the sale.
+
+### Realistic Sales Expectations (First 6 Months)
+
+Be honest about what's normal:
+
+| Marketing effort           | Likely first 6 months |
+|----------------------------|----------------------|
+| Just LemonSqueezy listing  | **5-30 sales total** |
+| + Product Hunt launch      | 50-200 sales         |
+| + Reddit + Twitter active  | 200-500 sales        |
+| + Paid ads + content       | 500-2000+ sales      |
+
+At $29 per sale, even 100 sales = $2,900 (LemonSqueezy fee: 5% + 50¢ per transaction).
+
+### LemonSqueezy Fees Summary
+
+- **5% + $0.50** per transaction.
+- They handle tax remittance globally — worth the fee for international sales.
+- No monthly subscription fee.
+- No setup fee.
+
+---
+
+## Part 6: Legal Checklist Before Launch
+
+The app already includes original-only content and legal pages, but verify these before selling:
+
+1. **All lesson content is your own** — already true. Verified in `/src/data/courseContent.js` and `/src/data/skillsPractice.js`.
+2. **No copyrighted audio files** — already true. Audio uses the browser's Web Speech API (free, on-device).
+3. **No copyrighted images** — only Lucide icons (ISC license, free for commercial use).
+4. **Terms of Service** — visit `/legal/terms` in the app. Update `support@example.com` to your real email.
+5. **Privacy Policy** — visit `/legal/privacy`. Required by GDPR (EU), CCPA (California), and Supabase ToS.
+6. **Copyright page** — visit `/legal/copyright`. Lists all open-source licenses correctly.
+7. **Update placeholders** in `src/components/Legal.jsx`:
+   - `COMPANY_NAME` (currently "English Course")
+   - `CONTACT_EMAIL` (currently `support@example.com` — **change this!**)
+   - `EFFECTIVE_DATE`
+8. **LemonSqueezy product listing must link to your Terms & Privacy URLs** (e.g., `https://your-app.vercel.app/#/legal/terms`).
+
+### Do You Need a Business Entity?
+
+- **For < $5,000/year in sales**: Selling as a sole proprietor / individual via LemonSqueezy is fine in most countries. LemonSqueezy is the Merchant of Record, so they handle the sales tax burden.
+- **For > $5,000/year**: Consider registering a single-person LLC (US) or equivalent in your country for liability protection and tax efficiency.
+- LemonSqueezy works with individuals — you do not need a registered business to start.
+
+---
+
+## Part 7: Selling on LemonSqueezy as a Digital Product
 
 ### What You Need
 
