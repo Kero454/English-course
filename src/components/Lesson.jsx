@@ -17,7 +17,7 @@ function findLesson(lessonId) {
   return null;
 }
 
-export default function Lesson({ completeLesson, isLessonCompleted }) {
+export default function Lesson({ completeLesson, isLessonCompleted, isPaid, showPaywall }) {
   const { lessonId } = useParams();
   const navigate = useNavigate();
   const [tab, setTab] = useState('learn');
@@ -36,6 +36,44 @@ export default function Lesson({ completeLesson, isLessonCompleted }) {
   }
 
   const { lesson, unit, level, levelData } = found;
+
+  // Paywall: non-A1 lessons require a license
+  if (level !== 'A1' && !isPaid) {
+    const lockedColors = getLevelColor(level);
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <div className={`${lockedColors.bg} text-white`}>
+          <div className="max-w-4xl mx-auto px-4 py-6">
+            <button
+              onClick={() => navigate(`/level/${level}`)}
+              className="flex items-center gap-2 text-white/70 hover:text-white text-sm mb-3 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to {level} — {levelData.title}
+            </button>
+            <h1 className="text-2xl font-bold">{lesson.title}</h1>
+          </div>
+        </div>
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 rounded-2xl p-8 sm:p-10 text-white text-center shadow-xl">
+            <div className="w-20 h-20 rounded-full bg-white/15 flex items-center justify-center mx-auto mb-5">
+              <BookOpen className="w-10 h-10" />
+            </div>
+            <h2 className="text-3xl font-bold mb-3">This lesson is part of {level}</h2>
+            <p className="text-white/80 max-w-md mx-auto mb-6">
+              You’re on the free A1 tier. Unlock all 20 lessons across A1–C2 with a one-time purchase. No subscription, lifetime access.
+            </p>
+            <button
+              onClick={() => showPaywall(level)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-slate-50 shadow-lg"
+            >
+              Unlock for $19
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const colors = getLevelColor(level);
   const exercises = lesson.exercises || [];
   const isCompleted = isLessonCompleted(lessonId);

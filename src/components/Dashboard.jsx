@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Award, BarChart3, ArrowRight, RotateCcw, CheckCircle2, Lock, LogOut } from 'lucide-react';
+import { BookOpen, Award, BarChart3, ArrowRight, RotateCcw, CheckCircle2, Lock, LogOut, Sparkles } from 'lucide-react';
 import courseContent, { getLevelColor } from '../data/courseContent';
 
-export default function Dashboard({ progress, resetProgress, signOut, user }) {
+export default function Dashboard({ progress, resetProgress, signOut, user, isPaid, showPaywall }) {
   const navigate = useNavigate();
   const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
   const currentLevel = progress.level || 'A1';
@@ -79,6 +79,23 @@ export default function Dashboard({ progress, resetProgress, signOut, user }) {
 
       {/* Course Levels */}
       <div className="max-w-5xl mx-auto px-4 py-8">
+        {!isPaid && (
+          <div className="mb-6 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 rounded-xl p-5 sm:p-6 text-white shadow-lg flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1">Limited launch offer</p>
+              <h3 className="text-xl font-bold mb-1">Unlock all 6 levels for $19</h3>
+              <p className="text-sm text-white/80">A1 is free. A2 through C2 are part of the full course &mdash; one-time payment, lifetime access.</p>
+            </div>
+            <button
+              onClick={() => showPaywall()}
+              className="shrink-0 inline-flex items-center gap-2 px-5 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-slate-50 shadow-lg"
+            >
+              <Sparkles className="w-5 h-5" />
+              Upgrade now
+            </button>
+          </div>
+        )}
+
         <h2 className="text-2xl font-bold text-slate-800 mb-6">Your Course</h2>
 
         <div className="space-y-4">
@@ -88,7 +105,11 @@ export default function Dashboard({ progress, resetProgress, signOut, user }) {
             const isCurrentLevel = level === currentLevel;
             const levelIdx = levels.indexOf(level);
             const currentIdx = levels.indexOf(currentLevel);
-            const isUnlocked = levelIdx <= currentIdx;
+            // A1 is always unlocked. A2-C2 require either payment OR appear locked with paywall CTA.
+            // We no longer block by placement level alone — paid users see all levels open.
+            const requiresPayment = level !== 'A1' && !isPaid;
+            const isUnlocked = !requiresPayment && levelIdx <= currentIdx;
+            const showAsPaid = !requiresPayment;
             const assessScore = progress.assessmentScores[level];
 
             const levelLessons = data.units.reduce((acc, u) => [...acc, ...u.lessons], []);
@@ -146,7 +167,15 @@ export default function Dashboard({ progress, resetProgress, signOut, user }) {
                     </div>
 
                     <div className="flex flex-col gap-2 shrink-0">
-                      {isUnlocked ? (
+                      {requiresPayment ? (
+                        <button
+                          onClick={() => showPaywall(level)}
+                          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white text-sm font-semibold rounded-lg hover:opacity-90"
+                        >
+                          <Lock className="w-4 h-4" />
+                          Unlock
+                        </button>
+                      ) : isUnlocked ? (
                         <>
                           <button
                             onClick={() => navigate(`/level/${level}`)}

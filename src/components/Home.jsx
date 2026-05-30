@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, GraduationCap, Target, TrendingUp, ChevronRight, User, LogOut } from 'lucide-react';
+import { BookOpen, GraduationCap, Target, TrendingUp, ChevronRight, User, LogOut, Sparkles, Check, Lock } from 'lucide-react';
 
-export default function Home({ progress, setStudentName, signOut, user }) {
+export default function Home({ progress, setStudentName, signOut, user, isPaid, showPaywall }) {
   const navigate = useNavigate();
   const [name, setName] = useState(progress.studentName || '');
 
@@ -127,6 +127,51 @@ export default function Home({ progress, setStudentName, signOut, user }) {
         </div>
       </div>
 
+      {/* Pricing / Upgrade banner */}
+      {!isPaid && (
+        <div className="max-w-5xl mx-auto px-4 pb-4">
+          <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 rounded-2xl p-8 sm:p-10 text-white shadow-2xl">
+            <div className="absolute top-0 right-0 bg-amber-400 text-amber-950 text-xs font-bold px-4 py-1.5 rounded-bl-xl">
+              LAUNCH OFFER — FIRST 100 BUYERS
+            </div>
+            <div className="grid sm:grid-cols-2 gap-8 items-center">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-2">One-time payment</p>
+                <div className="flex items-baseline gap-3 mb-3">
+                  <span className="text-5xl font-bold">$19</span>
+                  <span className="text-2xl text-white/50 line-through">$39</span>
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Lifetime access to all 6 CEFR levels</h2>
+                <p className="text-white/80 mb-5">No subscription. No recurring fees. Yours forever.</p>
+                <button
+                  onClick={() => showPaywall()}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-slate-50 shadow-lg"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Unlock the full course
+                </button>
+                <p className="text-xs text-white/60 mt-3">A1 (Beginner) is free • 30-day money-back guarantee</p>
+              </div>
+              <ul className="space-y-2.5">
+                {[
+                  '20 lessons across A1 to C2',
+                  '4 skills practice in every lesson',
+                  'Reading + Listening + Speaking + Writing',
+                  'Pronunciation feedback (microphone)',
+                  'Placement test + level assessments',
+                  'Cloud sync • install on phone (PWA)',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm">
+                    <Check className="w-5 h-5 text-emerald-300 mt-0.5 shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Levels Preview */}
       <div className="max-w-5xl mx-auto px-4 pb-16">
         <h2 className="text-3xl font-bold text-center text-slate-800 mb-12">
@@ -140,15 +185,24 @@ export default function Home({ progress, setStudentName, signOut, user }) {
             { level: 'B2', title: 'Upper Intermediate', color: 'amber', desc: 'Advanced tenses, passive voice, reported speech' },
             { level: 'C1', title: 'Advanced', color: 'rose', desc: 'Inversion, idioms, academic writing' },
             { level: 'C2', title: 'Proficiency', color: 'indigo', desc: 'Register, collocations, critical argumentation' },
-          ].map(({ level, title, color, desc }) => (
-            <div key={level} className={`rounded-xl p-5 border-2 bg-${color}-50 border-${color}-200`}>
-              <div className={`inline-block px-3 py-1 rounded-full text-sm font-bold bg-${color}-500 text-white mb-3`}>
-                {level}
+          ].map(({ level, title, color, desc }) => {
+            const locked = level !== 'A1' && !isPaid;
+            return (
+              <div key={level} className={`relative rounded-xl p-5 border-2 bg-${color}-50 border-${color}-200 ${locked ? 'opacity-90' : ''}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-bold bg-${color}-500 text-white`}>
+                    {level}
+                  </div>
+                  {level === 'A1' && !isPaid && (
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">FREE</span>
+                  )}
+                  {locked && <Lock className="w-4 h-4 text-slate-400" />}
+                </div>
+                <h3 className="font-semibold text-slate-800 mb-1">{title}</h3>
+                <p className="text-sm text-slate-500">{desc}</p>
               </div>
-              <h3 className="font-semibold text-slate-800 mb-1">{title}</h3>
-              <p className="text-sm text-slate-500">{desc}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

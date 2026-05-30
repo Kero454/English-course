@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, CheckCircle2, PlayCircle, Award } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle2, PlayCircle, Award, Lock, Sparkles } from 'lucide-react';
 import courseContent, { getLevelColor } from '../data/courseContent';
 
-export default function LevelOverview({ progress }) {
+export default function LevelOverview({ progress, isPaid, showPaywall }) {
   const { level } = useParams();
   const navigate = useNavigate();
   const data = courseContent[level];
   const colors = getLevelColor(level);
+  const isLocked = level !== 'A1' && !isPaid;
 
   if (!data) {
     return (
@@ -91,15 +92,16 @@ export default function LevelOverview({ progress }) {
                         </div>
                       </div>
                       <button
-                        onClick={() => navigate(`/lesson/${lesson.id}`)}
+                        onClick={() => isLocked ? showPaywall(level) : navigate(`/lesson/${lesson.id}`)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors shrink-0 ${
-                          isCompleted
+                          isLocked
+                            ? 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                            : isCompleted
                             ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                             : `${colors.bg} text-white hover:opacity-90`
                         }`}
                       >
-                        <PlayCircle className="w-4 h-4" />
-                        {isCompleted ? 'Review' : 'Start'}
+                        {isLocked ? <><Lock className="w-4 h-4" /> Locked</> : <><PlayCircle className="w-4 h-4" /> {isCompleted ? 'Review' : 'Start'}</>}
                       </button>
                     </div>
                   );
@@ -108,6 +110,26 @@ export default function LevelOverview({ progress }) {
             </div>
           ))}
         </div>
+
+        {/* Locked banner */}
+        {isLocked && (
+          <div className="mt-8 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 rounded-xl p-6 sm:p-8 text-white text-center shadow-lg">
+            <div className="w-16 h-16 rounded-full bg-white/15 flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">{level} is part of the full course</h3>
+            <p className="text-white/80 mb-5 max-w-md mx-auto">
+              A1 (Beginner) is yours free. Unlock A2 through C2 with a one-time purchase &mdash; no subscription, lifetime access.
+            </p>
+            <button
+              onClick={() => showPaywall(level)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-lg"
+            >
+              <Sparkles className="w-5 h-5" />
+              Unlock all levels &mdash; from $19
+            </button>
+          </div>
+        )}
 
         {/* Assessment Button */}
         <div className="mt-8 bg-white rounded-xl border border-slate-100 shadow-sm p-6 text-center">
@@ -127,11 +149,10 @@ export default function LevelOverview({ progress }) {
             </p>
           )}
           <button
-            onClick={() => navigate(`/assessment/${level}`)}
-            className={`inline-flex items-center gap-2 px-6 py-3 ${colors.bg} text-white font-semibold rounded-xl hover:opacity-90 transition-opacity`}
+            onClick={() => isLocked ? showPaywall(level) : navigate(`/assessment/${level}`)}
+            className={`inline-flex items-center gap-2 px-6 py-3 ${isLocked ? 'bg-slate-300 text-slate-600' : `${colors.bg} text-white hover:opacity-90`} font-semibold rounded-xl transition-opacity`}
           >
-            <Award className="w-5 h-5" />
-            {progress.assessmentScores[level] !== undefined ? 'Retake Assessment' : 'Take Assessment'}
+            {isLocked ? <><Lock className="w-5 h-5" /> Locked</> : <><Award className="w-5 h-5" /> {progress.assessmentScores[level] !== undefined ? 'Retake Assessment' : 'Take Assessment'}</>}
           </button>
         </div>
       </div>
